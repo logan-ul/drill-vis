@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="drillCanvas" width="1500" height="700"></canvas>
+</body>
+<script>
+    const formation = [
+      { x: 3, y: 15, dir: "N" },
+      { x: 5, y: 15, dir: "N" },
+      { x: 7, y: 15, dir: "N" },
+      { x: 3, y: 13, dir: "N" },
+      { x: 5, y: 13, dir: "N" },
+      { x: 7, y: 13, dir: "N" },
+      { x: 3, y: 11, dir: "N" },
+      { x: 5, y: 11, dir: "N" },
+      { x: 7, y: 11, dir: "N" },
+      { x: 1, y: 13, dir: "N" }
+    ];
+    const canvas = document.getElementById("drillCanvas");
+    const ctx = canvas.getContext("2d");
+    let p = 10
+
+    function drawFormation() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      formation.forEach(cadet => {
+        ctx.beginPath();
+        ctx.arc(cadet.x * 40, cadet.y * 40, 10, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+    drawFormation()
+    function forwardMarch(dir, cadet) {
+        if (dir =="N"){
+              cadet.y -= 1; // move up
+        }else if(dir =="E"){
+              cadet.x += 1; // move up
+        }else if(dir =="S"){
+              cadet.y += 1; // move up
+        }else if(dir =="W"){
+              cadet.x -= 1; // move up
+        }else if(dir =="NE"){
+              cadet.x += 1; // move up
+              cadet.y -= 1;
+        }else if(dir =="NW"){
+              cadet.x -= 1; // move up
+              cadet.y -= 1;
+        }else if(dir =="SE"){
+              cadet.x += 1; // move up
+              cadet.y += 1;
+        }else if(dir =="SW"){
+              cadet.x -= 1; // move up
+              cadet.y += 1;
+        }
+        drawFormation()
+    }
+
+    function forwardHalfStep(dir, cadet, mult = 1) {
+        if (dir =="N"){
+              cadet.y -= 0.5*mult; // move up
+        }else if(dir =="E"){
+              cadet.x += 0.5*mult; // move up
+        }else if(dir =="S"){
+              cadet.y += 0.5*mult; // move up
+        }else if(dir =="W"){
+              cadet.x -= 0.5*mult; // move up
+        }else if(dir =="NE"){
+              cadet.x += 0.5*mult; // move up
+              cadet.y -= 0.5*mult;
+        }else if(dir =="NW"){
+              cadet.x -= 0.5*mult; // move up
+              cadet.y -= 0.5*mult;
+        }else if(dir =="SE"){
+              cadet.x += 0.5*mult; // move up
+              cadet.y += 0.5*mult;
+        }else if(dir =="SW"){
+              cadet.x -= 0.5*mult; // move up
+              cadet.y += 0.5*mult;
+        }
+        drawFormation()
+    }
+
+    function turnHalfRight(cadet){
+        if (cadet.dir == "N"){
+            cadet.dir = "NE"
+        }else if (cadet.dir == "E"){
+            cadet.dir = "SE"
+        }else if (cadet.dir == "S"){
+            cadet.dir = "SW"
+        }else if (cadet.dir == "W"){
+            cadet.dir = "NW"
+        }else if (cadet.dir == "NE"){
+            cadet.dir = "E"
+        }else if (cadet.dir == "NW"){
+            cadet.dir = "N"
+        }else if (cadet.dir == "SE"){
+            cadet.dir = "S"
+        }else if (cadet.dir == "SW"){
+            cadet.dir = "W"
+        }else {
+            console.log("You're an idiot. turnHalfRight only takes one argument")
+        }
+    }
+    function turnRight(cadet){
+        turnHalfRight(cadet)
+        turnHalfRight(cadet)
+    }
+    function turnLeft(cadet){
+        turnRight(cadet)
+        turnRight(cadet)
+        turnRight(cadet)
+    }
+    function aboutFace(cadet){
+        turnHalfRight(cadet)
+        turnHalfRight(cadet)
+    }
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+    async function columnRight(){
+        forwardMarch(formation[8].dir, formation[8])
+        forwardMarch(formation[7].dir, formation[7])
+        forwardMarch(formation[6].dir, formation[6])
+        turnRight(formation[8])
+        turnHalfRight(formation[7])
+        turnHalfRight(formation[6])
+        forwardMarch(formation[5].dir, formation[5])
+        forwardMarch(formation[4].dir, formation[4])
+        forwardMarch(formation[3].dir, formation[3])
+        forwardMarch(formation[2].dir, formation[2])
+        forwardMarch(formation[1].dir, formation[1])
+        forwardMarch(formation[0].dir, formation[0])
+        forwardMarch(formation[9].dir, formation[9])
+        await sleep(1000)
+        forwardHalfStep(formation[8].dir, formation[8])
+        forwardMarch(formation[7].dir, formation[7])
+        forwardMarch(formation[6].dir, formation[6])
+        forwardMarch(formation[5].dir, formation[5])
+        forwardMarch(formation[4].dir, formation[4])
+        forwardMarch(formation[3].dir, formation[3])
+        forwardMarch(formation[2].dir, formation[2])
+        forwardMarch(formation[1].dir, formation[1])
+        forwardMarch(formation[0].dir, formation[0])
+        forwardMarch(formation[9].dir, formation[9])
+        await sleep(1000)
+        forwardMarch(formation[5].dir, formation[5])
+        forwardHalfStep(formation[8].dir, formation[8])
+        forwardMarch(formation[6].dir, formation[6])
+        forwardMarch(formation[7].dir, formation[7])
+        turnHalfRight(formation[7])
+        forwardMarch(formation[3].dir, formation[3])
+        turnHalfRight(formation[3])
+        forwardMarch(formation[2].dir, formation[2])
+        forwardMarch(formation[1].dir, formation[1])
+        forwardMarch(formation[0].dir, formation[0])
+        forwardMarch(formation[4].dir, formation[4])
+        turnHalfRight(formation[4])
+        turnRight(formation[5])
+        forwardMarch(formation[9].dir, formation[9])
+        turnHalfRight(formation[9])
+        await sleep(1000)
+        // forwardHalfStep(formation[5].dir, formation[5], 0.5)
+        forwardHalfStep(formation[8].dir, formation[8])
+        forwardHalfStep(formation[5].dir, formation[5], 0.5)
+        forwardMarch(formation[3].dir, formation[3])
+        forwardMarch(formation[4].dir, formation[4])
+        forwardMarch(formation[2].dir, formation[2])
+        forwardMarch(formation[1].dir, formation[1])
+        turnHalfRight(formation[1])
+        forwardMarch(formation[0].dir, formation[0])
+        forwardMarch(formation[6].dir, formation[6])
+        forwardMarch(formation[7].dir, formation[7])
+        forwardMarch(formation[9].dir, formation[9])
+        turnHalfRight(formation[0])
+        await sleep(1000)
+        forwardMarch(formation[2].dir, formation[2])
+        forwardMarch(formation[1].dir, formation[1])
+        forwardHalfStep(formation[8].dir, formation[8])
+        forwardHalfStep(formation[5].dir, formation[5], 0.5)
+        forwardMarch(formation[6].dir, formation[6])
+        forwardMarch(formation[3].dir, formation[3])
+        forwardMarch(formation[4].dir, formation[4])
+        turnRight(formation[2])
+        turnHalfRight(formation[4])
+        forwardMarch(formation[7].dir, formation[7])
+        forwardMarch(formation[9].dir, formation[9])
+        forwardMarch(formation[0].dir, formation[0])
+        await sleep(1000)
+        forwardHalfStep(formation[4].dir, formation[4])
+        turnHalfRight(formation[6])
+        forwardMarch(formation[6].dir, formation[6])
+        forwardHalfStep(formation[8].dir, formation[8])
+        forwardHalfStep(formation[5].dir, formation[5], 0.5)
+        forwardMarch(formation[3].dir, formation[3])
+        forwardMarch(formation[0].dir, formation[0])
+        forwardMarch(formation[1].dir, formation[1])
+        forwardMarch(formation[9].dir, formation[9])
+        turnHalfRight(formation[1])
+        forwardHalfStep(formation[7].dir, formation[7])
+        await sleep(1000)
+        forwardHalfStep(formation[8].dir, formation[8])
+        forwardHalfStep(formation[5].dir, formation[5], 0.5)
+        forwardHalfStep(formation[4].dir, formation[4])
+        forwardMarch(formation[6].dir, formation[6])
+        forwardMarch(formation[3].dir, formation[3])
+        forwardMarch(formation[0].dir, formation[0])
+        forwardHalfStep(formation[7].dir, formation[7])
+        forwardMarch(formation[9].dir, formation[9])
+        turnHalfRight(formation[3])
+        await sleep(1000)
+        forwardMarch(formation[3].dir, formation[3])
+        forwardHalfStep(formation[8].dir, formation[8])
+        forwardHalfStep(formation[5].dir, formation[5])
+        forwardHalfStep(formation[4].dir, formation[4])
+        forwardMarch(formation[6].dir, formation[6])
+        forwardMarch(formation[0].dir, formation[0])
+        forwardHalfStep(formation[7].dir, formation[7])
+        forwardMarch(formation[9].dir, formation[9])
+        turnHalfRight(formation[0])
+        await sleep(1000)
+        forwardMarch(formation[9].dir, formation[9])
+        turnHalfRight(formation[9])
+        forwardHalfStep(formation[7].dir, formation[7])
+        forwardMarch(formation[6].dir, formation[6])
+        forwardHalfStep(formation[8].dir, formation[8])
+        forwardHalfStep(formation[5].dir, formation[5])
+        forwardHalfStep(formation[4].dir, formation[4])
+        forwardMarch(formation[3].dir, formation[3])
+        console.log(formation[8].x - formation[5].x)
+
+
+    }
+    columnRight()
+
+
+</script>
+</html>
