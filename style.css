@@ -1,0 +1,7 @@
+#buttons{
+    flex-wrap: wrap;
+    display: flex;
+    position: sticky;
+    top: 0;
+    left: 0;
+}
