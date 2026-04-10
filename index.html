@@ -13,7 +13,12 @@
         <button onclick="flightHalt()">Flight Halt</button>
         <button onclick="constantHalfStep()">Half Step March</button>
         <button onclick="toTheRearMarch()">To The Rear March</button>
-        <button onclick="aboutFace()">About Face</button>
+        <button onclick="aboutFaceAll()">About Face</button>
+        <button onclick="rightFace()">Right Face</button>
+        <button onclick="leftFace()">Left Face</button>
+        <button onclick="rightFlank()">Right Flank</button>
+        <button onclick="leftFlank()">Left Flank</button>
+        <button onclick="reportIn()">Report In</button>
     </div>
     <canvas id="drillCanvas" width="1500" height="1700"></canvas>
 </body>
@@ -400,6 +405,77 @@
         forwardMarchAll()
         await sleep(500)
         constantForwardMarch()
+    }
+    function rightFace(){
+        turnRight(formation[0])
+        turnRight(formation[1])
+        turnRight(formation[2])
+        turnRight(formation[3])
+        turnRight(formation[4])
+        turnRight(formation[5])
+        turnRight(formation[6])
+        turnRight(formation[7])
+        turnRight(formation[8])
+        turnRight(formation[9])
+    }
+    function leftFace(){
+        turnLeft(formation[0])
+        turnLeft(formation[1])
+        turnLeft(formation[2])
+        turnLeft(formation[3])
+        turnLeft(formation[4])
+        turnLeft(formation[5])
+        turnLeft(formation[6])
+        turnLeft(formation[7])
+        turnLeft(formation[8])
+        turnLeft(formation[9])
+    }
+    async function rightFlank(){
+        if(checkMove < 1){
+            checkMove++
+        }else if(checkMove > 1){
+            return
+        }else{
+            forwardMarchAll()
+        }
+        rightFace()
+        await sleep(500)
+        constantForwardMarch()
+    }
+    async function leftFlank(){
+        if(checkMove < 1){
+            checkMove++
+        }else if(checkMove > 1){
+            return
+        }else{
+            forwardMarchAll()
+        }
+        leftFace()
+        await sleep(500)
+        constantForwardMarch()
+    }
+    async function reportIn(){
+        forwardMarch(formation[9].dir, formation[9])
+        await sleep(500)
+        forwardMarch(formation[9].dir, formation[9])
+        await sleep(500)
+        forwardMarch(formation[9].dir, formation[9])
+        await sleep(500)
+        forwardMarch(formation[9].dir, formation[9])
+        await sleep(500)
+        aboutFace(formation[9])
+    }
+    async function rightStep(cadet){
+        turnRight(cadet)
+        forwardHalfStep(cadet.dir, cadet)
+        await sleep(500)
+        turnLeft(cadet)
+    }
+
+    async function close(){
+        if(checkMove > 0 && checkMove < 2){
+            // make a function to find the elements of the formation first
+        }
     }
 </script>
 </html>
