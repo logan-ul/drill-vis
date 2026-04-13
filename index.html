@@ -19,23 +19,33 @@
         <button onclick="rightFlank()">Right Flank</button>
         <button onclick="leftFlank()">Left Flank</button>
         <button onclick="reportIn()">Report In</button>
-        <button onclick="close()">Close March</button>
+        <button onclick="closeMarch()">Close March</button>
     </div>
     <canvas id="drillCanvas" width="1500" height="1700"></canvas>
 </body>
 <script>
+
+    class Cadet {
+        constructor(x, y, dir, color){
+            this.x = x
+            this.y = y
+            this.dir = dir
+            this.color = color
+        }
+    }
+
     const formation = [
-      { x: 3, y: 15, dir: "N" },
-      { x: 5, y: 15, dir: "N" },
-      { x: 7, y: 15, dir: "N" },
-      { x: 3, y: 13, dir: "N" },
-      { x: 5, y: 13, dir: "N" },
-      { x: 7, y: 13, dir: "N" },
-      { x: 3, y: 11, dir: "N" },
-      { x: 5, y: 11, dir: "N" },
-      { x: 7, y: 11, dir: "N" },
-      { x: 1, y: 13, dir: "N" }
-    ];
+    new Cadet(3, 15, "N", "red"),
+    new Cadet(5, 15, "N", "green"),
+    new Cadet(7, 15, "N", "blue"),
+    new Cadet(3, 13, "N", "red"),
+    new Cadet(5, 13, "N", "green"),
+    new Cadet(7, 13, "N", "blue"),
+    new Cadet(3, 11, "N", "red"),
+    new Cadet(5, 11, "N", "green"),
+    new Cadet(7, 11, "N", "blue"),
+    new Cadet(1, 13, "N", "orange")
+];
     const canvas = document.getElementById("drillCanvas");
     const ctx = canvas.getContext("2d");
     let p = 10
@@ -85,8 +95,61 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       formation.forEach(cadet => {
+        // defining pixle positions, cadet.x or cadet.y are grid positions, mulitplying them by 40 or any other number produces actual pixle values we can use
+        // going up or down in number will change grid spacing respectively
+        const px = cadet.x * 40;
+        const py = cadet.y * 40;
+
         ctx.beginPath();
-        ctx.arc(cadet.x * 40, cadet.y * 40, 10, 0, Math.PI * 2);
+        ctx.arc(px, py, 10, 0, Math.PI * 2);
+        ctx.fillStyle = cadet.color
+        ctx.fill();
+        
+        ctx.beginPath();
+
+        if (cadet.dir === "N") {
+          ctx.moveTo(px, py - 15);
+          ctx.lineTo(px - 5, py - 5);
+          ctx.lineTo(px + 5, py - 5);
+        }
+        else if (cadet.dir === "S") {
+          ctx.moveTo(px, py + 15);
+          ctx.lineTo(px - 5, py + 5);
+          ctx.lineTo(px + 5, py + 5);
+        }
+        else if (cadet.dir === "E") {
+          ctx.moveTo(px + 15, py);
+          ctx.lineTo(px + 5, py - 5);
+          ctx.lineTo(px + 5, py + 5);
+        }
+        else if (cadet.dir === "W") {
+          ctx.moveTo(px - 15, py);
+          ctx.lineTo(px - 5, py - 5);
+          ctx.lineTo(px - 5, py + 5);
+        }
+        else if (cadet.dir === "NE") {
+          ctx.moveTo(px + 12, py - 12);
+          ctx.lineTo(px + 2, py - 8);
+          ctx.lineTo(px + 8, py - 2);
+        }
+        else if (cadet.dir === "SE") {
+          ctx.moveTo(px + 12, py + 12);
+          ctx.lineTo(px + 8, py + 2);
+          ctx.lineTo(px + 2, py + 8);
+        }
+        else if (cadet.dir === "SW") {
+          ctx.moveTo(px - 12, py + 12);
+          ctx.lineTo(px - 2, py + 8);
+          ctx.lineTo(px - 8, py + 2);
+        }
+        else if (cadet.dir === "NW") {
+          ctx.moveTo(px - 12, py - 12);
+          ctx.lineTo(px - 8, py - 2);
+          ctx.lineTo(px - 2, py - 8);
+        }
+
+        ctx.closePath();
+        ctx.fillStyle = cadet.color;
         ctx.fill();
       });
     }
@@ -473,7 +536,7 @@
         turnLeft(cadet)
     }
 
-    async function close(){
+    async function closeMarch(){
         if(checkMove > 0 && checkMove < 2){
             // make a function to find the elements of the formation first - done
             /*
