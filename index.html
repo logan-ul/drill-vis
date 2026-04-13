@@ -19,7 +19,8 @@
         <button onclick="rightFlank()">Right Flank</button>
         <button onclick="leftFlank()">Left Flank</button>
         <button onclick="reportIn()">Report In</button>
-        <button onclick="close()">Close March</button>
+        <button onclick="closeMarch()">Close March</button>
+        <button onclick="extendMarch()">Extend March</button>
     </div>
     <canvas id="drillCanvas" width="1500" height="1700"></canvas>
 </body>
@@ -467,22 +468,84 @@
         aboutFace(formation[9])
     }
     async function rightStep(cadet){
-        turnRight(cadet)
-        forwardHalfStep(cadet.dir, cadet)
-        await sleep(500)
-        turnLeft(cadet)
+        if (cadet.dir =="N"){
+              cadet.x += 0.5; // move up
+        }else if(cadet.dir =="E"){
+              cadet.y += 0.5; // move up
+        }else if(cadet.dir =="S"){
+              cadet.x -= 0.5; // move up
+        }else if(cadet.dir =="W"){
+              cadet.y -= 0.5; // move up
+        }
+        drawFormation()
     }
 
-    async function close(){
-        if(checkMove > 0 && checkMove < 2){
-            // make a function to find the elements of the formation first - done
-            /*
-            rightstep second and third elements
-            */
-           let formationByElements = findElements()
-           formationByElements[1].forEach(cadet => rightStep(cadet))
+    async function leftStep(cadet){
+        if (cadet.dir =="N"){
+              cadet.x -= 0.5; // move up
+        }else if(cadet.dir =="E"){
+              cadet.y -= 0.5; // move up
+        }else if(cadet.dir =="S"){
+              cadet.x += 0.5; // move up
+        }else if(cadet.dir =="W"){
+              cadet.y += 0.5; // move up
+        }
+        drawFormation()
+    }
+
+    async function closeMarch(){
+        if(checkMove == 1){
+            let formationByElements = findElements()
+            formationByElements[1].forEach(cadetTemp => {
+                rightStep(cadetTemp)
+            })
+            formationByElements[2].forEach(cadetTemp => {
+                rightStep(cadetTemp)
+            })
+            await sleep(500)
+            formationByElements[1].forEach(cadetTemp => {
+                rightStep(cadetTemp)
+            })
+            formationByElements[2].forEach(cadetTemp => {
+                rightStep(cadetTemp)
+            })
+            await sleep(500)
+            formationByElements[2].forEach(cadetTemp => {
+                rightStep(cadetTemp)
+            })
+            await sleep(500)
+            formationByElements[2].forEach(cadetTemp => {
+                rightStep(cadetTemp)
+            })
         }
     }
+    async function extendMarch(){
+        if(checkMove == 1){
+            let formationByElements = findElements()
+            formationByElements[1].forEach(cadetTemp => {
+                leftStep(cadetTemp)
+            })
+            formationByElements[2].forEach(cadetTemp => {
+                leftStep(cadetTemp)
+            })
+            await sleep(500)
+            formationByElements[1].forEach(cadetTemp => {
+                leftStep(cadetTemp)
+            })
+            formationByElements[2].forEach(cadetTemp => {
+                leftStep(cadetTemp)
+            })
+            await sleep(500)
+            formationByElements[2].forEach(cadetTemp => {
+                leftStep(cadetTemp)
+            })
+            await sleep(500)
+            formationByElements[2].forEach(cadetTemp => {
+                leftStep(cadetTemp)
+            })
+        }
+    }
+
 
     function findElements(){
         /*
