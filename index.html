@@ -23,6 +23,7 @@
         <button onclick="extendMarch()">Extend March</button>
         <button onclick="openRanksMarch()">Open Ranks March</button>
         <button onclick="closeRanksMarch()">Close Ranks March</button>
+        <button onclick="leftStepMarch()">Left Step March</button>
     </div>
     <canvas id="drillCanvas" width="1500" height="1700"></canvas>
 </body>
@@ -43,6 +44,16 @@
     const ctx = canvas.getContext("2d");
     let p = 10
     let checkMove = 1 //sets whether or not the dots are moving
+    const dirToAngle = {
+          N: 90,
+          NE: 45,
+          E: 0,
+          SE: 315,
+          S: 270,
+          SW: 225,
+          W: 180,
+          NW: 135
+        };
     
     function centerLine(){
         ctx.beginPath();
@@ -91,6 +102,21 @@
             await sleep(500)
         }
     }
+    async function constantHalfStepSpecific(cadet){
+        // moves one cadet in half step without stopping
+        if(checkMove < 1){
+            checkMove++
+            checkMove++
+        }else if(checkMove < 2){
+            checkMove++
+        }else if(checkMove == 2){
+            return
+        }
+        while(checkMove == 2){
+            forwardHalfStep(cadet)
+            await sleep(500)
+        }
+    }
 
     function drawFormation() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -104,77 +130,79 @@
       });
     }
     drawFormation()
-    function forwardMarch(dir, cadet) {
-        if (dir =="N"){
+    function forwardMarch(cadet) {
+        const diag = 1 / Math.sqrt(2);
+        if (cadet.dir =="N"){
               cadet.y -= 1; // move up
-        }else if(dir =="E"){
+        }else if(cadet.dir =="E"){
               cadet.x += 1; // move up
-        }else if(dir =="S"){
+        }else if(cadet.dir =="S"){
               cadet.y += 1; // move up
-        }else if(dir =="W"){
+        }else if(cadet.dir =="W"){
               cadet.x -= 1; // move up
-        }else if(dir =="NE"){
-              cadet.x += 1; // move up
-              cadet.y -= 1;
-        }else if(dir =="NW"){
-              cadet.x -= 1; // move up
-              cadet.y -= 1;
-        }else if(dir =="SE"){
-              cadet.x += 1; // move up
-              cadet.y += 1;
-        }else if(dir =="SW"){
-              cadet.x -= 1; // move up
-              cadet.y += 1;
+        }else if(cadet.dir =="NE"){
+              cadet.x += diag; // move up
+              cadet.y -= diag;
+        }else if(cadet.dir =="NW"){
+              cadet.x -= diag; // move up
+              cadet.y -= diag;
+        }else if(cadet.dir =="SE"){
+              cadet.x += diag; // move up
+              cadet.y += diag;
+        }else if(cadet.dir =="SW"){
+              cadet.x -= diag; // move up
+              cadet.y += diag;
         }
         drawFormation()
     }
 
     function forwardMarchAll(){
-        forwardMarch(formation[8].dir, formation[8])
-        forwardMarch(formation[7].dir, formation[7])
-        forwardMarch(formation[6].dir, formation[6])
-        forwardMarch(formation[5].dir, formation[5])
-        forwardMarch(formation[4].dir, formation[4])
-        forwardMarch(formation[3].dir, formation[3])
-        forwardMarch(formation[2].dir, formation[2])
-        forwardMarch(formation[1].dir, formation[1])
-        forwardMarch(formation[0].dir, formation[0])
-        forwardMarch(formation[9].dir, formation[9])
+        forwardMarch(formation[8])
+        forwardMarch(formation[7])
+        forwardMarch(formation[6])
+        forwardMarch(formation[5])
+        forwardMarch(formation[4])
+        forwardMarch(formation[3])
+        forwardMarch(formation[2])
+        forwardMarch(formation[1])
+        forwardMarch(formation[0])
+        forwardMarch(formation[9])
     }
     function forwardHalfStepAll(){
-        forwardHalfStep(formation[8].dir, formation[8])
-        forwardHalfStep(formation[7].dir, formation[7])
-        forwardHalfStep(formation[6].dir, formation[6])
-        forwardHalfStep(formation[5].dir, formation[5])
-        forwardHalfStep(formation[4].dir, formation[4])
-        forwardHalfStep(formation[3].dir, formation[3])
-        forwardHalfStep(formation[2].dir, formation[2])
-        forwardHalfStep(formation[1].dir, formation[1])
-        forwardHalfStep(formation[0].dir, formation[0])
-        forwardHalfStep(formation[9].dir, formation[9])
+        forwardHalfStep(formation[8])
+        forwardHalfStep(formation[7])
+        forwardHalfStep(formation[6])
+        forwardHalfStep(formation[5])
+        forwardHalfStep(formation[4])
+        forwardHalfStep(formation[3])
+        forwardHalfStep(formation[2])
+        forwardHalfStep(formation[1])
+        forwardHalfStep(formation[0])
+        forwardHalfStep(formation[9])
     }
 
-    function forwardHalfStep(dir, cadet, mult = 1) {
-        if (dir =="N"){
+    function forwardHalfStep(cadet, mult = 1) {
+        const diag = 0.5 / Math.sqrt(2);
+        if (cadet.dir =="N"){
               cadet.y -= 0.5*mult; // move up
-        }else if(dir =="E"){
+        }else if(cadet.dir =="E"){
               cadet.x += 0.5*mult; // move up
-        }else if(dir =="S"){
+        }else if(cadet.dir =="S"){
               cadet.y += 0.5*mult; // move up
-        }else if(dir =="W"){
+        }else if(cadet.dir =="W"){
               cadet.x -= 0.5*mult; // move up
-        }else if(dir =="NE"){
-              cadet.x += 0.5*mult; // move up
-              cadet.y -= 0.5*mult;
-        }else if(dir =="NW"){
-              cadet.x -= 0.5*mult; // move up
-              cadet.y -= 0.5*mult;
-        }else if(dir =="SE"){
-              cadet.x += 0.5*mult; // move up
-              cadet.y += 0.5*mult;
-        }else if(dir =="SW"){
-              cadet.x -= 0.5*mult; // move up
-              cadet.y += 0.5*mult;
+        }else if(cadet.dir =="NE"){
+              cadet.x += diag*mult; // move up
+              cadet.y -= diag*mult;
+        }else if(cadet.dir =="NW"){
+              cadet.x -= diag*mult; // move up
+              cadet.y -= diag*mult;
+        }else if(cadet.dir =="SE"){
+              cadet.x += diag*mult; // move up
+              cadet.y += diag*mult;
+        }else if(cadet.dir =="SW"){
+              cadet.x -= diag*mult; // move up
+              cadet.y += diag*mult;
         }
         drawFormation()
     }
@@ -221,189 +249,20 @@
         }else if(checkMove > 1){
             checkMove--
         }
-        // first step. all move, first row turn as well
-        console.log("Left")
-        forwardMarch(formation[8].dir, formation[8])
-        forwardMarch(formation[7].dir, formation[7])
-        forwardMarch(formation[6].dir, formation[6])
-        turnRight(formation[8])
-        turnHalfRight(formation[7])
-        turnHalfRight(formation[6])
-        forwardMarch(formation[5].dir, formation[5])
-        forwardMarch(formation[4].dir, formation[4])
-        forwardMarch(formation[3].dir, formation[3])
-        forwardMarch(formation[2].dir, formation[2])
-        forwardMarch(formation[1].dir, formation[1])
-        forwardMarch(formation[0].dir, formation[0])
-        forwardMarch(formation[9].dir, formation[9])
-        await sleep(500)
-        // Second Step. All Move
-        console.log("Right")
-        forwardHalfStep(formation[8].dir, formation[8])
-        forwardMarch(formation[7].dir, formation[7])
-        forwardMarch(formation[6].dir, formation[6])
-        forwardMarch(formation[5].dir, formation[5])
-        forwardMarch(formation[4].dir, formation[4])
-        forwardMarch(formation[3].dir, formation[3])
-        forwardMarch(formation[2].dir, formation[2])
-        forwardMarch(formation[1].dir, formation[1])
-        forwardMarch(formation[0].dir, formation[0])
-        forwardMarch(formation[9].dir, formation[9])
-        await sleep(500)
-        console.log("Left")
-        forwardMarch(formation[5].dir, formation[5])
-        forwardHalfStep(formation[8].dir, formation[8])
-        forwardMarch(formation[6].dir, formation[6])
-        forwardMarch(formation[7].dir, formation[7])
-        turnHalfRight(formation[7])
-        forwardMarch(formation[3].dir, formation[3])
-        turnHalfRight(formation[3])
-        forwardMarch(formation[2].dir, formation[2])
-        forwardMarch(formation[1].dir, formation[1])
-        forwardMarch(formation[0].dir, formation[0])
-        forwardMarch(formation[4].dir, formation[4])
-        turnHalfRight(formation[4])
-        turnRight(formation[5])
-        forwardMarch(formation[9].dir, formation[9])
-        turnHalfRight(formation[9])
-        await sleep(500)
-        // forwardHalfStep(formation[5].dir, formation[5], 0.5)
-        console.log("Right")
-        forwardHalfStep(formation[8].dir, formation[8])
-        forwardHalfStep(formation[5].dir, formation[5], 0.5)
-        forwardMarch(formation[3].dir, formation[3])
-        forwardMarch(formation[4].dir, formation[4])
-        forwardMarch(formation[2].dir, formation[2])
-        forwardMarch(formation[1].dir, formation[1])
-        forwardMarch(formation[0].dir, formation[0])
-        forwardMarch(formation[6].dir, formation[6])
-        forwardMarch(formation[7].dir, formation[7])
-        forwardMarch(formation[9].dir, formation[9])
-        await sleep(500)
-        console.log("Left")
-        forwardMarch(formation[2].dir, formation[2])
-        forwardMarch(formation[1].dir, formation[1])
-        forwardHalfStep(formation[8].dir, formation[8])
-        forwardHalfStep(formation[5].dir, formation[5], 0.5)
-        forwardMarch(formation[6].dir, formation[6])
-        forwardMarch(formation[3].dir, formation[3])
-        forwardMarch(formation[4].dir, formation[4])
-        forwardMarch(formation[0].dir, formation[0])
-        turnRight(formation[2])
-        turnHalfRight(formation[4])
-        turnHalfRight(formation[0])
-        turnHalfRight(formation[1])
-        forwardMarch(formation[7].dir, formation[7])
-        forwardMarch(formation[9].dir, formation[9])
-        await sleep(500)
-        console.log("Right")
-        forwardHalfStep(formation[4].dir, formation[4])
-        turnHalfRight(formation[6])
-        forwardMarch(formation[6].dir, formation[6])
-        forwardHalfStep(formation[8].dir, formation[8])
-        forwardHalfStep(formation[5].dir, formation[5], 0.5)
-        forwardMarch(formation[3].dir, formation[3])
-        forwardMarch(formation[0].dir, formation[0])
-        forwardMarch(formation[1].dir, formation[1])
-        forwardMarch(formation[9].dir, formation[9])
-        forwardHalfStep(formation[7].dir, formation[7])
-        await sleep(500)
-        console.log("Left")
-        forwardHalfStep(formation[8].dir, formation[8])
-        forwardHalfStep(formation[5].dir, formation[5], 0.5)
-        forwardHalfStep(formation[4].dir, formation[4])
-        forwardMarch(formation[1].dir, formation[1])
-        turnHalfRight(formation[1])
-        forwardMarch(formation[6].dir, formation[6])
-        forwardMarch(formation[3].dir, formation[3])
-        forwardMarch(formation[0].dir, formation[0])
-        forwardHalfStep(formation[7].dir, formation[7])
-        forwardMarch(formation[9].dir, formation[9])
-        turnHalfRight(formation[3])
-        await sleep(500)
-        console.log("Right")
-        forwardMarch(formation[3].dir, formation[3])
-        forwardHalfStep(formation[8].dir, formation[8])
-        forwardHalfStep(formation[5].dir, formation[5])
-        forwardHalfStep(formation[4].dir, formation[4])
-        forwardMarch(formation[6].dir, formation[6])
-        forwardMarch(formation[0].dir, formation[0])
-        forwardHalfStep(formation[7].dir, formation[7])
-        forwardMarch(formation[9].dir, formation[9])
-        await sleep(500)
-        console.log("Left")
-        forwardMarch(formation[0].dir, formation[0])
-        forwardMarch(formation[9].dir, formation[9])
-        turnHalfRight(formation[9])
-        forwardHalfStep(formation[7].dir, formation[7])
-        forwardMarch(formation[6].dir, formation[6])
-        forwardHalfStep(formation[8].dir, formation[8])
-        forwardHalfStep(formation[5].dir, formation[5])
-        forwardHalfStep(formation[4].dir, formation[4])
-        forwardMarch(formation[3].dir, formation[3])
-        turnHalfRight(formation[0])
-        await sleep(500)
-        console.log("Right")
-        forwardMarch(formation[9].dir, formation[9])
-        forwardHalfStep(formation[8].dir, formation[8])
-        forwardHalfStep(formation[7].dir, formation[7])
-        forwardHalfStep(formation[6].dir, formation[6])
-        forwardHalfStep(formation[5].dir, formation[5])
-        forwardHalfStep(formation[4].dir, formation[4])
-        forwardHalfStep(formation[3].dir, formation[3])
-        forwardHalfStep(formation[2].dir, formation[2])
-        forwardHalfStep(formation[1].dir, formation[1])
-        forwardHalfStep(formation[0].dir, formation[0])
-        await sleep(500)
-        console.log("Left")
-        forwardMarch(formation[9].dir, formation[9])
-        forwardHalfStep(formation[8].dir, formation[8])
-        forwardHalfStep(formation[7].dir, formation[7])
-        forwardHalfStep(formation[6].dir, formation[6])
-        forwardHalfStep(formation[5].dir, formation[5])
-        forwardHalfStep(formation[4].dir, formation[4])
-        forwardHalfStep(formation[3].dir, formation[3])
-        forwardHalfStep(formation[2].dir, formation[2])
-        forwardHalfStep(formation[1].dir, formation[1])
-        forwardHalfStep(formation[0].dir, formation[0])
-        await sleep(500)
-        console.log("Right")
-        forwardMarch(formation[9].dir, formation[9])
-        forwardHalfStep(formation[8].dir, formation[8])
-        forwardHalfStep(formation[7].dir, formation[7])
-        forwardHalfStep(formation[6].dir, formation[6])
-        forwardHalfStep(formation[5].dir, formation[5])
-        forwardHalfStep(formation[4].dir, formation[4])
-        forwardHalfStep(formation[3].dir, formation[3])
-        forwardHalfStep(formation[2].dir, formation[2])
-        forwardHalfStep(formation[1].dir, formation[1])
-        forwardHalfStep(formation[0].dir, formation[0])
-        await sleep(500)
-        console.log("Left")
-        forwardMarch(formation[9].dir, formation[9])
-        forwardHalfStep(formation[8].dir, formation[8])
-        forwardHalfStep(formation[7].dir, formation[7])
-        forwardHalfStep(formation[6].dir, formation[6])
-        forwardHalfStep(formation[5].dir, formation[5])
-        forwardHalfStep(formation[4].dir, formation[4])
-        forwardHalfStep(formation[3].dir, formation[3])
-        forwardHalfStep(formation[2].dir, formation[2])
-        forwardHalfStep(formation[1].dir, formation[1])
-        forwardHalfStep(formation[0].dir, formation[0])
-        await sleep(500)
-        constantHalfStep()
     }
     function aboutFaceAll(){
-        aboutFace(formation[0])
-        aboutFace(formation[1])
-        aboutFace(formation[2])
-        aboutFace(formation[3])
-        aboutFace(formation[4])
-        aboutFace(formation[5])
-        aboutFace(formation[6])
-        aboutFace(formation[7])
-        aboutFace(formation[8])
-        aboutFace(formation[9])
+        if(checkMove == 1){
+            aboutFace(formation[0])
+            aboutFace(formation[1])
+            aboutFace(formation[2])
+            aboutFace(formation[3])
+            aboutFace(formation[4])
+            aboutFace(formation[5])
+            aboutFace(formation[6])
+            aboutFace(formation[7])
+            aboutFace(formation[8])
+            aboutFace(formation[9])
+        }
     }
     async function toTheRearMarch(){
         if(checkMove < 1){
@@ -421,28 +280,32 @@
         constantForwardMarch()
     }
     function rightFace(){
-        turnRight(formation[0])
-        turnRight(formation[1])
-        turnRight(formation[2])
-        turnRight(formation[3])
-        turnRight(formation[4])
-        turnRight(formation[5])
-        turnRight(formation[6])
-        turnRight(formation[7])
-        turnRight(formation[8])
-        turnRight(formation[9])
+        if(checkMove == 1){
+            turnRight(formation[0])
+            turnRight(formation[1])
+            turnRight(formation[2])
+            turnRight(formation[3])
+            turnRight(formation[4])
+            turnRight(formation[5])
+            turnRight(formation[6])
+            turnRight(formation[7])
+            turnRight(formation[8])
+            turnRight(formation[9])
+        }
     }
     function leftFace(){
-        turnLeft(formation[0])
-        turnLeft(formation[1])
-        turnLeft(formation[2])
-        turnLeft(formation[3])
-        turnLeft(formation[4])
-        turnLeft(formation[5])
-        turnLeft(formation[6])
-        turnLeft(formation[7])
-        turnLeft(formation[8])
-        turnLeft(formation[9])
+        if(checkMove == 1){
+            turnLeft(formation[0])
+            turnLeft(formation[1])
+            turnLeft(formation[2])
+            turnLeft(formation[3])
+            turnLeft(formation[4])
+            turnLeft(formation[5])
+            turnLeft(formation[6])
+            turnLeft(formation[7])
+            turnLeft(formation[8])
+            turnLeft(formation[9])
+        }
     }
     async function rightFlank(){
         if(checkMove < 1){
@@ -469,9 +332,9 @@
         constantForwardMarch()
     }
     async function reportIn(){
-        forwardMarch(formation[9].dir, formation[9])
+        forwardMarch(formation[9])
         await sleep(500)
-        forwardMarch(formation[9].dir, formation[9])
+        forwardMarch(formation[9])
         await sleep(500)
         aboutFace(formation[9])
     }
@@ -501,96 +364,123 @@
         drawFormation()
     }
 
+    function findElements() {
+        const angleDeg = dirToAngle[formation[0].dir]; // use formation direction
+        const angleRad = angleDeg * Math.PI / 180;
+        
+        // Forward vector
+        const forward = {
+            x: Math.cos(angleRad),
+            y: -Math.sin(angleRad)
+        };
+    
+        // Right vector (perpendicular)
+        const right = {
+            x: Math.cos(angleRad - Math.PI / 2),
+            y: -Math.sin(angleRad - Math.PI / 2)
+        };
+    
+        // Use squad leader (index 0 or 9 depending on your setup)
+        const origin = formation[4]; // center-ish (more stable than edge)
+    
+        // Convert everyone into formation-relative coordinates
+        const elementsMap = {};
+    
+        formation.forEach(cadet => {
+            const dx = cadet.x - origin.x;
+            const dy = cadet.y - origin.y;
+        
+            const rightDist = dx * right.x + dy * right.y;
+            const forwardDist = dx * forward.x + dy * forward.y;
+        
+            // Group by column (element)
+            const spacing = 1; // tweak this if grouping is off
+            const key = Math.round(rightDist / spacing);
+        
+            if (!elementsMap[key]) elementsMap[key] = [];
+        
+            elementsMap[key].push({
+                cadet,
+                forwardDist
+            });
+        });
+    
+        // Convert to sorted array of elements
+        const elements = Object.keys(elementsMap)
+            .sort((a, b) => a - b)
+            .map(key => {
+                return elementsMap[key]
+                    .sort((a, b) => b.forwardDist - a.forwardDist)
+                    .map(obj => obj.cadet);
+            });
+        console.log(angleDeg)
+        return elements;
+}
+
     async function closeMarch(){
+        console.log(findElements())
+        let exception = 0
         if(checkMove == 1){
             let formationByElements = findElements()
+            formationByElements[1 + exception].forEach(cadetTemp => {
+                rightStep(cadetTemp)
+            })
+            formationByElements[0 + exception].forEach(cadetTemp => {
+                rightStep(cadetTemp)
+            })
+            await sleep(500)
+            formationByElements[1 + exception].forEach(cadetTemp => {
+                rightStep(cadetTemp)
+            })
+            formationByElements[0 + exception].forEach(cadetTemp => {
+                rightStep(cadetTemp)
+            })
+            await sleep(500)
+            formationByElements[0 + exception].forEach(cadetTemp => {
+                rightStep(cadetTemp)
+            })
+            await sleep(500)
+            formationByElements[0 + exception].forEach(cadetTemp => {
+                rightStep(cadetTemp)
+            })
+        }else if(checkMove == 0){
+            let formationByElements = findElements()
+            formationByElements[0].forEach(cadetTemp => constantHalfStepSpecific(cadetTemp))
             formationByElements[1].forEach(cadetTemp => {
-                rightStep(cadetTemp)
-            })
-            formationByElements[2].forEach(cadetTemp => {
-                rightStep(cadetTemp)
-            })
-            await sleep(500)
-            formationByElements[1].forEach(cadetTemp => {
-                rightStep(cadetTemp)
-            })
-            formationByElements[2].forEach(cadetTemp => {
-                rightStep(cadetTemp)
-            })
-            await sleep(500)
-            formationByElements[2].forEach(cadetTemp => {
-                rightStep(cadetTemp)
-            })
-            await sleep(500)
-            formationByElements[2].forEach(cadetTemp => {
-                rightStep(cadetTemp)
+                
             })
         }
     }
     async function extendMarch(){
+        console.log(findElements())
         if(checkMove == 1){
             let formationByElements = findElements()
             formationByElements[1].forEach(cadetTemp => {
                 leftStep(cadetTemp)
             })
-            formationByElements[2].forEach(cadetTemp => {
+            formationByElements[0].forEach(cadetTemp => {
                 leftStep(cadetTemp)
             })
             await sleep(500)
             formationByElements[1].forEach(cadetTemp => {
                 leftStep(cadetTemp)
             })
-            formationByElements[2].forEach(cadetTemp => {
+            formationByElements[0].forEach(cadetTemp => {
                 leftStep(cadetTemp)
             })
             await sleep(500)
-            formationByElements[2].forEach(cadetTemp => {
+            formationByElements[0].forEach(cadetTemp => {
                 leftStep(cadetTemp)
             })
             await sleep(500)
-            formationByElements[2].forEach(cadetTemp => {
+            formationByElements[0].forEach(cadetTemp => {
                 leftStep(cadetTemp)
             })
+        }else if(checkMove == 0){
+            let formationByElements = findElements()
         }
     }
 
-
-    function findElements(){
-        /*
-        Check direction of flight
-        set each element into a list that will be iterated later
-            - if statements for each direction
-        return elements
-        */
-       let direct = formation[8].dir
-       let element1 = []
-       let element2 = []
-       let element3 = []
-
-       if(direct == "N"){
-        element1 = [formation[8], formation[5], formation[2]]
-        element2 = [formation[7], formation[4], formation[1]]
-        element3 = [formation[6], formation[3], formation[0]]
-        return [element1, element2, element3]
-       }else if(direct == "E"){
-        element1 = [formation[2], formation[1], formation[0]]
-        element2 = [formation[5], formation[4], formation[3]]
-        element3 = [formation[8], formation[7], formation[6]]
-        return [element1, element2, element3]
-       }else if(direct == "S"){
-        element1 = [formation[0], formation[3], formation[6]]
-        element2 = [formation[1], formation[4], formation[7]]
-        element3 = [formation[2], formation[5], formation[8]]
-        return [element1, element2, element3]
-       }else if(direct == "W"){
-        element1 = [formation[6], formation[7], formation[8]]
-        element2 = [formation[3], formation[4], formation[5]]
-        element3 = [formation[0], formation[1], formation[2]]
-        return [element1, element2, element3]
-       }else{
-        console.log("I'm not doing diagonals")
-       }
-    }
 
     function findRows(){
         /*
@@ -648,16 +538,22 @@
     }
 
     async function leftStepMarch(){
-        leftStep(formation[0])
-        leftStep(formation[1])
-        leftStep(formation[2])
-        leftStep(formation[3])
-        leftStep(formation[4])
-        leftStep(formation[5])
-        leftStep(formation[6])
-        leftStep(formation[7])
-        leftStep(formation[8])
-        leftStep(formation[9])
+        if(checkMove == 1){
+            checkMove--
+            while(checkMove == 0){
+                leftStep(formation[0])
+                leftStep(formation[1])
+                leftStep(formation[2])
+                leftStep(formation[3])
+                leftStep(formation[4])
+                leftStep(formation[5])
+                leftStep(formation[6])
+                leftStep(formation[7])
+                leftStep(formation[8])
+                leftStep(formation[9])
+                await sleep(500)
+            }
+        }
     }
 
 </script>
