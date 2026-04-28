@@ -31,15 +31,15 @@
 </body>
 <script>
     const formation = [
-      { x: 33, y: 35, dir: "N" },
-      { x: 35, y: 35, dir: "N" },
-      { x: 37, y: 35, dir: "N" },
-      { x: 33, y: 33, dir: "N" },
-      { x: 35, y: 33, dir: "N" },
-      { x: 37, y: 33, dir: "N" },
-      { x: 33, y: 31, dir: "N" },
-      { x: 35, y: 31, dir: "N" },
-      { x: 37, y: 31, dir: "N" },
+      { x: 33, y: 35, dir: "N", role: "none" },
+      { x: 35, y: 35, dir: "N", role: "none" },
+      { x: 37, y: 35, dir: "N", role: "none" },
+      { x: 33, y: 33, dir: "N", role: "none" },
+      { x: 35, y: 33, dir: "N", role: "none" },
+      { x: 37, y: 33, dir: "N", role: "none" },
+      { x: 33, y: 31, dir: "N", role: "none" },
+      { x: 35, y: 31, dir: "N", role: "none" },
+      { x: 37, y: 31, dir: "N", role: "none" },
       { x: 31, y: 33, dir: "N", role: "commander" }
     ];
     const canvas = document.getElementById("drillCanvas");
@@ -242,10 +242,6 @@
     }
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-    function distanceToPivot(cadet, pivot) {
-        return Math.hypot(cadet.x - pivot.x, cadet.y - pivot.y);
-    }
-
     async function halfStepSleep(cadet){
         forwardHalfStep(cadet)
         await sleep(500)
@@ -253,6 +249,7 @@
 
 
     async function columnRight(){
+        let turnedList = []
         if(checkMove !== 0){
             checkMove = 0
         }
@@ -260,21 +257,57 @@
         if(checkMove !== 1){
             checkMove = 1
         }
-        let pivotCadet = elements[elements.length - 1][0]
-        let pivot = { x: pivotCadet.x, y: pivotCadet.y }
-
-        for(let i = elements.length - 1; i >= 0; i--){
-            let element = elements[i]
-
-            element.forEach(cadet => {
-                if(distanceToPivot(cadet, pivot) > 0){
-                    
-                }
-                turnRight(cadet)
-                constantHalfStepSpecific(cadet)
-            })
-            await sleep(500)
+        console.log(elements[elements.length - 2][0])
+        if(elements[elements.length-2][0].role == "commander"){
+            turnHalfRight(elements[elements.length-2][0])
+            forwardMarch(elements[elements.length-2][0])
+            turnHalfRight(elements[elements.length-2][1])
+            forwardMarch(elements[elements.length-2][1])
+            forwardMarch(elements[elements.length-2][2])
+            forwardMarch(elements[elements.length-2][3])
+            turnRight(elements[elements.length - 1][0])
+            constantHalfStepSpecific(elements[elements.length - 1][0])
+            forwardHalfStep(elements[elements.length-1][1])
+            forwardHalfStep(elements[elements.length-1][2])
+        }else{
+            turnHalfRight(elements[elements.length-2][0])
+            forwardMarch(elements[elements.length-2][0])
+            forwardMarch(elements[elements.length-2][1])
+            forwardMarch(elements[elements.length-2][2])
+            if(elements[elements.length-2][elements[elements.length-2].length-1].role == "commander"){
+                turnRight(elements[elements.length - 1][0])
+                constantHalfStepSpecific(elements[elements.length - 1][0])
+                forwardMarch(formation[9])
+                forwardHalfStep(elements[elements.length-1][1])
+                forwardHalfStep(elements[elements.length-1][2])
+            }else if(elements[0][0].role == "commander"){
+                turnRight(elements[elements.length - 1][0])
+                constantHalfStepSpecific(elements[elements.length - 1][0])
+                forwardMarch(formation[9])
+                forwardHalfStep(elements[elements.length-1][1])
+                forwardHalfStep(elements[elements.length-1][2])
+            }else if(elements[elements.length-1][0].role == "commander"){
+                
+            }
         }
+        turnHalfRight(elements[elements.length-3][0])
+        forwardMarch(elements[elements.length-3][0])
+        forwardMarch(elements[elements.length-3][1])
+        forwardMarch(elements[elements.length-3][2])
+        await sleep(500)
+        forwardHalfStep(elements[elements.length-1][1])
+        forwardHalfStep(elements[elements.length-1][2])
+        if(elements[elements.length-2][0].role == "commander"){
+            forwardMarch(elements[elements.length-2][0])
+            forwardMarch(elements[elements.length-2][1])
+            forwardMarch(elements[elements.length-2][2])
+            forwardMarch(elements[elements.length-2][3])
+        }else{
+            forwardMarch(elements[elements.length-2][0])
+            forwardMarch(elements[elements.length-2][1])
+            forwardMarch(elements[elements.length-2][2])
+        }
+
     }
     function aboutFaceAll(){
         if(checkMove == 1){
